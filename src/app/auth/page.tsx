@@ -6,7 +6,7 @@ import { Shield, Lock, Mail, User, ArrowRight, Loader2, Sparkles, CheckCircle2 }
 
 export default function AuthPage() {
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLoggedin, setIsLoggedin] = useState(true);
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -23,11 +23,10 @@ export default function AuthPage() {
   e.preventDefault();
   setLoading(true);
 
-  setTimeout(() => {
-    if (isLogin) {
-      // LOGIN
+  setTimeout(() => { 
+    if (isLoggedin) {
+      // LOGIN PAGE
       const savedUser = localStorage.getItem("user_data");
-
       if (savedUser) {
         const user = JSON.parse(savedUser);
 
@@ -35,35 +34,37 @@ export default function AuthPage() {
           localStorage.setItem("isLoggedIn", "true");
           router.push("/user");
         } else {
-          alert("Credentials match nahi kar rahe!");
+          alert("Credentials does not match with existing data.");
           setLoading(false);
         }
       } else {
-        alert("User nahi mila. Signup karo pehle.");
+        alert("User not found.Please signup first.");
         setLoading(false);
       }
 
     } else {
-      // SIGNUP
+      // SIGNUP PAGE
       localStorage.setItem("user_data", JSON.stringify(formData));
 
-      alert("Account created! Ab login karo.");
+      alert("Account created Succesfully!");
 
-      setIsLogin(true); // login mode open
+      setIsLogin(true); // OPEN LOGIN MODE
       setLoading(false);
     }
 
   }, 1200);
 };
 
+  // USER INTERFACE
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 selection:bg-red-500/30">
-      {/* Background Ambient Glows */}
+      {/* Background Glows */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-red-900/20 blur-[120px] rounded-full" />
         <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-blue-900/10 blur-[120px] rounded-full" />
       </div>
 
+      {/* MAIN APP ICON */}
       <div className="w-full max-w-[440px] z-10">
         <div className="flex flex-col items-center mb-10 group">
           <div className="w-14 h-14 bg-gradient-to-tr from-red-600 to-red-400 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(220,38,38,0.3)] group-hover:scale-110 transition-transform duration-500">
@@ -74,21 +75,23 @@ export default function AuthPage() {
           </h1>
         </div>
 
+        {/*GREETING TEXT - based on your login status....*/}
         <div className="relative group">
           <div className="absolute -inset-[1px] bg-gradient-to-b from-white/10 to-transparent rounded-[32px] pointer-events-none" />
           
           <div className="bg-[#0f0f0f]/80 backdrop-blur-xl border border-white/5 rounded-[32px] p-8 md:p-10 shadow-2xl relative">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">
-                {isLogin ? "Welcome back" : "Create account"}
+                {isLoggedin ? "Welcome back" : "Create account"}
               </h2>
               <p className="text-slate-500 text-sm">
-                {isLogin ? "Please enter your details to sign in." : "Start protecting your medical profile today."}
+                {isLoggedin ? "Please enter your details to sign in." : "Start protecting your medical profile today."}
               </p>
             </div>
 
+            {/*USER FORM*/}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
+              {!isLoggedin && (
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-[2px] ml-1">Name</label>
                   <div className="relative group/input">
@@ -98,7 +101,7 @@ export default function AuthPage() {
                       type="text"
                       required
                       onChange={handleChange}
-                      placeholder="Arjun Gupta"
+                      placeholder="Ex-Arjun Gupta"
                       className="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-3.5 pl-12 pr-4 text-white outline-none focus:bg-white/[0.05] focus:border-red-500/50 transition-all placeholder:text-slate-700" 
                     />
                   </div>
@@ -114,7 +117,7 @@ export default function AuthPage() {
                     type="email"
                     required
                     onChange={handleChange}
-                    placeholder="name@company.com"
+                    placeholder="Ex-name@company.com"
                     className="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-3.5 pl-12 pr-4 text-white outline-none focus:bg-white/[0.05] focus:border-red-500/50 transition-all placeholder:text-slate-700" 
                   />
                 </div>
@@ -135,7 +138,7 @@ export default function AuthPage() {
                 </div>
               </div>
 
-              {isLogin && (
+              {isLoggedin && (
                 <div className="flex justify-end">
                   <button type="button" className="text-[11px] font-bold text-red-500/80 hover:text-red-500 uppercase tracking-wider">Forgot Password?</button>
                 </div>
@@ -150,7 +153,7 @@ export default function AuthPage() {
                     <Loader2 className="animate-spin" size={20} />
                   ) : (
                     <>
-                      <span>{isLogin ? "SIGN IN" : "GET STARTED"}</span>
+                      <span>{isLoggedin ? "SIGN IN" : "GET STARTED"}</span>
                       <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                     </>
                   )}
@@ -159,20 +162,22 @@ export default function AuthPage() {
               </button>
             </form>
 
+            {/*BUTTONS- LOG IN/SIGN IN*/}
             <div className="mt-8 pt-8 border-t border-white/5">
               <p className="text-center text-slate-500 text-sm">
-                {isLogin ? "Don't have an account?" : "Already a member?"}
+                {isLoggedin ? "Don't have an account?" : "Already a member?"}
                 <button 
-                  onClick={() => setIsLogin(!isLogin)}
+                  onClick={() => setIsLoggedin(!isLoggedin)}
                   className="ml-2 text-white font-bold hover:text-red-500 transition-colors underline underline-offset-4 decoration-red-500/30"
                 >
-                  {isLogin ? "Create account" : "Sign in instead"}
+                  {isLoggedin ? "Create account" : "Sign in instead"}
                 </button>
               </p>
             </div>
           </div>
         </div>
 
+        {/*FOOTER SECTION*/}
         <div className="mt-8 flex items-center justify-center gap-6 text-slate-600">
           <div className="flex items-center gap-1.5">
             <CheckCircle2 size={14} />
